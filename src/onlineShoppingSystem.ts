@@ -22,18 +22,6 @@ class ProductItem {
   }
 }
 
-class Orders {
-  userId: number;
-  items: ProductItem[];
-  totPrice: number;
-
-  constructor(userId: number) {
-    this.userId = userId;
-    this.items = [];
-    this.totPrice = 0;
-  }
-}
-
 class Cart {
   userId: number;
   cartItems: ProductItem[];
@@ -55,6 +43,11 @@ class Cart {
     this.cartItems = this.cartItems.filter(
       (prod) => prod.prodId !== product.prodId
     );
+  }
+
+  getTotPrice() {
+    this.totPrice = this.cartItems.reduce((acc, cur) => cur.price + acc, 0);
+    return this.totPrice;
   }
 }
 
@@ -79,7 +72,6 @@ class Users {
   email: string;
   cart: Cart;
   wishlist: Wishlist;
-  orders: Orders;
 
   constructor(name: string, address: string, email: string) {
     this.userId = Date.now();
@@ -88,7 +80,6 @@ class Users {
     this.email = email;
     this.cart = new Cart(this.userId);
     this.wishlist = new Wishlist(this.userId);
-    this.orders = new Orders(this.userId);
   }
 
   addToCart(product: ProductItem) {
@@ -114,6 +105,10 @@ class Users {
 
   deleteFromCart(product: ProductItem) {
     this.cart.deleteProductFromCart(product);
+  }
+
+  getTotalPriceInCart() {
+    return this.cart.getTotPrice();
   }
 }
 
@@ -206,7 +201,8 @@ shoppingSystem.addProductToUser(tarun, product1);
 shoppingSystem.addProductToWishlist(tarun, product2);
 shoppingSystem.addProductToUser(tarun, product3);
 
-console.log(shoppingSystem.deleteProductFromUser(tarun, product3));
+// console.log(shoppingSystem.deleteProductFromUser(tarun, product3));
+console.log(tarun.getTotalPriceInCart());
 
 console.log(tarun.getCart());
 console.log(tarun.getWishlist());
